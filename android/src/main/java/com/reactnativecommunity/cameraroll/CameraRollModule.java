@@ -105,6 +105,7 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
 
   public CameraRollModule(ReactApplicationContext reactContext) {
     super(reactContext);
+    new Utils().setContext(reactContext);
   }
 
   @Override
@@ -735,6 +736,18 @@ public class CameraRollModule extends NativeCameraRollModuleSpec {
       image.putNull("orientation");
     }
 
+    // added isAnimated property
+    boolean isAnimated = false;
+
+    if(mimeType.equalsIgnoreCase("image/gif") || mimeType.equalsIgnoreCase("image/apng") ){
+      isAnimated = true;
+    }else if(mimeType.equalsIgnoreCase("image/webp")){
+      isAnimated = Utils.isAnimatedWebp(photoUri);
+    }else{
+      isAnimated = false;
+    }
+    
+    image.putBoolean("isAnimated",isAnimated);
     node.putMap("image", image);
     return putImageSizeSuccess && putPlayableDurationSuccess;
   }
